@@ -428,22 +428,6 @@ static boolean I_SDL_InitSound(void)
     if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
         return false;
 
-#if defined(SDL20)
-    {
-        const SDL_version       *linked = Mix_Linked_Version();
-
-        if (linked->major != MIX_MAJOR_VERSION || linked->minor != MIX_MINOR_VERSION)
-            I_Error("The wrong version of SDL2_MIXER.DLL was found. "PACKAGE_NAME" requires "
-                "v%d.%d.%d, not v%d.%d.%d.", linked->major, linked->minor, linked->patch,
-                MIX_MAJOR_VERSION, MIX_MINOR_VERSION, MIX_PATCHLEVEL);
-
-        if (linked->patch != MIX_PATCHLEVEL)
-            C_Warning("The wrong version of SDL2_MIXER.DLL was found. "PACKAGE_NAME" requires "
-                "v%d.%d.%d, not v%d.%d.%d.", linked->major, linked->minor, linked->patch,
-                MIX_MAJOR_VERSION, MIX_MINOR_VERSION, MIX_PATCHLEVEL);
-    }
-#endif
-
     if (Mix_OpenAudio(snd_samplerate, AUDIO_S16SYS, 2, GetSliceSize()) < 0)
         return false;
 

@@ -859,12 +859,7 @@ boolean C_Responder(event_t *ev)
         int             key = ev->data1;
         char            ch = (char)ev->data2;
         int             i;
-
-#if defined(SDL20)
-        SDL_Keymod      modstate = SDL_GetModState();
-#else
         SDLMod          modstate = SDL_GetModState();
-#endif
 
         switch (key)
         {
@@ -1218,42 +1213,6 @@ boolean C_Responder(event_t *ev)
                         selectend = caretpos = strlen(consoleinput);
                     }
 
-                    // copy selected text to clipboard
-                    else if (ch == 'c')
-                    {
-                        if (selectstart < selectend)
-                            SDL_SetClipboardText(M_SubString(consoleinput, selectstart,
-                                selectend - selectstart));
-                    }
-
-                    // paste text from clipboard
-                    else if (ch == 'v')
-                    {
-                        C_AddToUndoHistory();
-                        M_snprintf(consoleinput, sizeof(consoleinput), "%s%s%s",
-                            M_SubString(consoleinput, 0, selectstart), SDL_GetClipboardText(),
-                            M_SubString(consoleinput, selectend, strlen(consoleinput) - selectend));
-                        selectstart += strlen(SDL_GetClipboardText());
-                        selectend = caretpos = selectstart;
-                    }
-
-                    // cut selected text to clipboard
-                    else if (ch == 'x')
-                    {
-                        if (selectstart < selectend)
-                        {
-                            C_AddToUndoHistory();
-                            SDL_SetClipboardText(M_SubString(consoleinput, selectstart,
-                                selectend - selectstart));
-                            for (i = selectend; (unsigned int)i < strlen(consoleinput); ++i)
-                                consoleinput[selectstart + i - selectend] = consoleinput[i];
-                            consoleinput[selectstart + i - selectend] = '\0';
-                            caretpos = selectend = selectstart;
-                            caretwait = I_GetTime() + CARETWAIT;
-                            showcaret = true;
-                        }
-                    }
-
                     // undo
                     else if (ch == 'z')
                         if (undolevels)
@@ -1306,29 +1265,6 @@ boolean C_Responder(event_t *ev)
     }
     else if (ev->type == ev_keyup)
         return false;
-#if defined(SDL20)
-    else if (ev->type == ev_mousewheel)
-    {
-        // scroll output up
-        if (ev->data1 > 0)
-        {
-            if (consolestrings > 10)
-                outputhistory = (outputhistory == -1 ? consolestrings - 11 :
-                    MAX(0, outputhistory - 1));
-        }
-
-        // scroll output down
-        else if (ev->data1 < 0)
-        {
-            if (outputhistory != -1)
-            {
-                ++outputhistory;
-                if (outputhistory + 10 == consolestrings)
-                    outputhistory = -1;
-            }
-        }
-    }
-#else
     else if (ev->type == ev_mouse)
     {
         // scroll output up
@@ -1350,7 +1286,6 @@ boolean C_Responder(event_t *ev)
             }
         }
     }
-#endif
     return true;
 }
 
@@ -1400,19 +1335,11 @@ void C_PrintSDLVersions(void)
 {
     C_Output("Using version %i.%i.%i of %s.",
         SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL,
-#if defined(SDL20)
-        "SDL2.DLL"
-#else
         "SDL.DLL"
-#endif
         );
 
     C_Output("Using version %i.%i.%i of %s.",
         SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL,
-#if defined(SDL20)
-        "SDL2_MIXER.DLL"
-#else
         "SDL_MIXER.DLL"
-#endif
         );
 }

@@ -127,10 +127,6 @@ int                     startuptimer;
 
 boolean                 realframe;
 
-#if defined(SDL20)
-extern SDL_Window       *sdl_window;
-#endif
-
 void D_CheckNetGame(void);
 
 //
@@ -649,55 +645,7 @@ static boolean D_IsUnsupportedPWAD(char *filename)
 
 static void D_FirstUse(void)
 {
-#if defined(SDL20)
-    char *msg = "Thank you for downloading " PACKAGE_NAME "!\n\nPlease note that, as with all "
-        "DOOM source ports, no actual map data is included\nwith " PACKAGE_NAME ".\n\nIn the "
-        "dialog box that follows, please navigate to where an official \xe2\x80\x9cIWAD file"
-        "\xe2\x80\x9d that\n" PACKAGE_NAME " requires (such as DOOM.WAD or DOOM2.WAD) has been "
-        "installed.\n\nAdditional \xe2\x80\x9cPWAD files\xe2\x80\x9d may then be selected by "
-        "clicking or "
-#if defined(__MACOSX__)
-        "CMD"
-#else
-        "CTRL"
-#endif
-        "-clicking on them.\nGo to the DOOM RETRO Wiki for more information.";
-
-    const SDL_MessageBoxButtonData buttons[] = 
-    {
 #if defined(WIN32)
-        {                                       0, 0, "&Wiki"   },
-#endif
-        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "&Cancel" },
-        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 2, "&OK"     }
-    };
-
-    const SDL_MessageBoxData messageboxdata =
-    {
-        SDL_MESSAGEBOX_INFORMATION,
-        NULL,
-        PACKAGE_NAME,
-        msg,
-        SDL_arraysize(buttons),
-        buttons,
-        NULL
-    };
-    int buttonid;
-
-    if (SDL_ShowMessageBox(&messageboxdata, &buttonid) >= 0)
-    {
-#if defined(WIN32)
-        if (buttons[buttonid].buttonid == 0)
-        {
-            ShellExecute(GetActiveWindow(), "open", PACKAGE_WIKI_URL, NULL, NULL, SW_SHOWNORMAL);
-            I_Quit(false);
-        }
-#endif
-        else if (buttons[buttonid].buttonid == 1)
-            I_Quit(false);
-    }
-
-#elif defined(WIN32)
     LPCWSTR msg = L"Thank you for downloading " PACKAGE_NAME_W L"!\n\n"
         L"Please note that, as with all DOOM source ports, no actual map data is "
         L"distributed with " PACKAGE_NAME_W L".\n\n"

@@ -42,10 +42,6 @@
 #include "doomtype.h"
 #include "SDL.h"
 
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-#define SDL20
-#endif
-
 #define MAX_MOUSE_BUTTONS       8
 
 #define GAMMALEVELS             31
@@ -69,9 +65,7 @@ void I_SetPalette(byte *palette);
 
 void I_FinishUpdate(void);
 
-#if !defined(SDL20)
 void ApplyWindowResize(int resize_h);
-#endif
 
 void ToggleFullscreen(void);
 
@@ -109,10 +103,5 @@ extern boolean  noinput;
 
 extern boolean  vid_showfps;
 extern boolean  wipe;
-
-#if defined(SDL20)
-extern int      windowx;
-extern int      windowy;
-#endif
 
 #endif

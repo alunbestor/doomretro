@@ -63,12 +63,6 @@
 
 #define DCLICKUSE_DEFAULT                       false
 
-#if defined(SDL20)
-#define DISPLAY_MIN                             1
-#define DISPLAY_DEFAULT                         1
-#define DISPLAY_MAX                             INT_MAX
-#endif
-
 #define EPISODE_MIN                             0
 #define EPISODE_DEFAULT                         0
 #define EPISODE_MAX                             3
@@ -230,17 +224,9 @@
 
 #define MOUSEFORWARD_DEFAULT                    -1
 
-#if defined(SDL20)
-#define MOUSEPREVWEAPON_DEFAULT                 MOUSE_WHEELUP
-#else
 #define MOUSEPREVWEAPON_DEFAULT                 3
-#endif
 
-#if defined(SDL20)
-#define MOUSENEXTWEAPON_DEFAULT                 MOUSE_WHEELDOWN
-#else
 #define MOUSENEXTWEAPON_DEFAULT                 4
-#endif
 
 #define MOUSESENSITIVITY_MIN                    0
 #define MOUSESENSITIVITY_DEFAULT                12
@@ -281,12 +267,6 @@
 #define RUNCOUNT_MAX                            32768
 
 #define SAVEGAME_DEFAULT                        0
-
-#if defined(SDL20)
-#define SCALEDRIVER_DEFAULT                     "opengl"
-
-#define SCALEFILTER_DEFAULT                     "nearest"
-#endif
 
 #define SCREENSIZE_MIN                          0
 #define SCREENSIZE_DEFAULT                      7
@@ -330,10 +310,6 @@
 #define VIDEODRIVER_DEFAULT                     "windows"
 #else
 #define VIDEODRIVER_DEFAULT                     ""
-#endif
-
-#if defined(SDL20)
-#define VSYNC_DEFAULT                           false
 #endif
 
 #define WIDESCREEN_DEFAULT                      false

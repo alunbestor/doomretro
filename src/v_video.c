@@ -1168,14 +1168,9 @@ extern char             maptitle[128];
 extern boolean          splashscreen;
 extern int              titlesequence;
 
-#if defined(SDL20)
-extern SDL_Window       *window;
-extern SDL_Renderer     *renderer;
-#else
 extern SDL_Surface      *screen;
 extern SDL_Surface      *screenbuffer;
 extern SDL_Color        palette[256];
-#endif
 
 boolean V_ScreenShot(void)
 {
@@ -1184,10 +1179,6 @@ boolean V_ScreenShot(void)
     char        folder[MAX_PATH] = "";
     int         count = 0;
     SDL_Surface *screenshot = NULL;
-
-#if defined(SDL20)
-    SDL_Surface *surface;
-#endif
 
 #if defined(WIN32)
     HRESULT     hr = SHGetFolderPath(NULL, CSIDL_MYPICTURES, NULL, SHGFP_TYPE_CURRENT, folder);
@@ -1233,35 +1224,6 @@ boolean V_ScreenShot(void)
         M_snprintf(lbmpath, sizeof(lbmpath), "%s" DIR_SEPARATOR_S "%s", lbmpath, lbmname);
     } while (M_FileExists(lbmpath));
 
-#if defined(SDL20)
-    surface = SDL_GetWindowSurface(window);
-    if (surface)
-    {
-        unsigned char   *pixels = malloc(surface->w * surface->h * surface->format->BytesPerPixel);
-
-        if (pixels)
-        {
-            if (!SDL_RenderReadPixels(renderer, &surface->clip_rect, surface->format->format,
-                pixels, surface->w * surface->format->BytesPerPixel))
-            {
-                screenshot = SDL_CreateRGBSurfaceFrom(pixels, surface->w, surface->h,
-                    surface->format->BitsPerPixel, surface->w * surface->format->BytesPerPixel,
-                    surface->format->Rmask, surface->format->Gmask, surface->format->Bmask,
-                    surface->format->Amask);
-
-                if (screenshot)
-                {
-                    result = !SDL_SaveBMP(screenshot, lbmpath);
-                    SDL_FreeSurface(screenshot);
-                    screenshot = NULL;
-                    free(pixels);
-                    SDL_FreeSurface(surface);
-                    surface = NULL;
-                }
-            }
-        }
-    }
-#else
     screenshot = SDL_CreateRGBSurface(screenbuffer->flags, screenbuffer->w,
         (widescreen ? screen->h : screenbuffer->h), screenbuffer->format->BitsPerPixel,
         screenbuffer->format->Rmask, screenbuffer->format->Gmask, screenbuffer->format->Bmask,
@@ -1271,6 +1233,5 @@ boolean V_ScreenShot(void)
     SDL_BlitSurface(screenbuffer, NULL, screenshot, NULL);
     result = !SDL_SaveBMP(screenshot, lbmpath);
     SDL_FreeSurface(screenshot);
-#endif
     return result;
 }

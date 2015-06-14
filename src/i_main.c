@@ -194,10 +194,6 @@ void I_AccessibilityShortcutKeys(boolean bAllowKeys)
     }
 }
 
-#if defined(SDL20)
-extern SDL_Window       *window;
-#endif
-
 void I_InitWindows32(void)
 {
     HINSTANCE           handle = GetModuleHandle(NULL);
@@ -205,13 +201,8 @@ void I_InitWindows32(void)
 
     SDL_VERSION(&info.version);
 
-#if defined(SDL20)
-    SDL_GetWindowWMInfo(window, &info);
-    hwnd = info.info.win.window;
-#else
     SDL_GetWMInfo(&info);
     hwnd = info.window;
-#endif
 
     icon = LoadIcon(handle, "IDI_ICON1");
     SetClassLongPtr(hwnd, GCLP_HICON, (LONG)icon);

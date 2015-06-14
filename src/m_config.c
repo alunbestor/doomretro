@@ -144,9 +144,6 @@ extern boolean  mapfixes;
 extern int      maxbloodsplats;
 extern boolean  messages;
 extern boolean  mirrorweapons;
-#if defined(SDL20)
-extern int      display;
-#endif
 extern int      mousesensitivity;
 extern float    mouse_acceleration;
 extern int      mouse_threshold;
@@ -163,10 +160,6 @@ extern int      pixelwidth;
 extern int      playerbob;
 extern char     *playername;
 extern int      runcount;
-#if defined(SDL20)
-extern char     *scaledriver;
-extern char     *scalefilter;
-#endif
 extern int      screenheight;
 extern char     *screenresolution;
 extern int      screenwidth;
@@ -181,12 +174,7 @@ extern boolean  spritefixes;
 extern boolean  swirlingliquid;
 extern char     *timidity_cfg_path;
 extern boolean  translucency;
-#if !defined(WIN32) || !defined(SDL20)
 extern char     *videodriver;
-#endif
-#if defined(SDL20)
-extern boolean  vsync;
-#endif
 extern boolean  widescreen;
 extern int      windowheight;
 extern char     *windowposition;
@@ -326,22 +314,10 @@ static default_t cvars[] =
     CONFIG_VARIABLE_INT          (skilllevel,              selectedskilllevel,           10),
     CONFIG_VARIABLE_INT          (spritefixes,             spritefixes,                   1),
     CONFIG_VARIABLE_INT          (vid_capfps,              capfps,                        1),
-#if defined(SDL20)
-    CONFIG_VARIABLE_INT          (vid_display,             display,                       0),
-#endif
     CONFIG_VARIABLE_INT          (vid_fullscreen,          fullscreen,                    1),
-#if defined(SDL20)
-    CONFIG_VARIABLE_STRING       (vid_scaledriver,         scaledriver,                   0),
-    CONFIG_VARIABLE_STRING       (vid_scalefilter,         scalefilter,                   0),
-#endif
     CONFIG_VARIABLE_INT          (vid_screenheight,        screenheight,                  5),
     CONFIG_VARIABLE_INT          (vid_screenwidth,         screenwidth,                   5),
-#if !defined(WIN32) || !defined(SDL20)
     CONFIG_VARIABLE_STRING       (vid_videodriver,         videodriver,                   0),
-#endif
-#if defined(SDL20)
-    CONFIG_VARIABLE_INT          (vid_vsync,               vsync,                         1),
-#endif
     CONFIG_VARIABLE_INT          (vid_widescreen,          widescreen,                    1),
     CONFIG_VARIABLE_STRING       (vid_windowposition,      windowposition,                0),
     CONFIG_VARIABLE_INT          (vid_windowheight,        windowheight,                  0),
@@ -419,15 +395,10 @@ alias_t aliases[] =
     { "left",                           0,  4 }, { "mouse1",                         0,  4 },
     { "middle",                         1,  4 }, { "mouse2",                         1,  4 },
     { "right",                          2,  4 }, { "mouse3",                         2,  4 },
-#if !defined(SDL20)
     { "wheelup",                        3,  4 }, { "wheeldown",                      4,  4 },
-#endif
     { "mouse4",                         3,  4 }, { "mouse5",                         4,  4 },
     { "mouse6",                         5,  4 }, { "mouse7",                         6,  4 },
     { "mouse8",                         7,  4 },
-#if defined(SDL20)
-    { "wheelup",                        8,  4 }, { "wheeldown",                      9,  4 },
-#endif
     { "desktop",                        0,  5 }, { "low",                            0,  6 },
     { "high",                           1,  6 }, { "-",                              0,  7 },
     { "none",                           0,  7 }, { "off",                            0,  7 },
@@ -1063,11 +1034,6 @@ static void M_CheckDefaults(void)
     if (mirrorweapons != false && mirrorweapons != true)
         mirrorweapons = MIRRORWEAPONS_DEFAULT;
 
-#if defined(SDL20)
-    if (display < 1 || display > DISPLAY_MAX)
-        display = DISPLAY_DEFAULT;
-#endif
-
     maxbloodsplats = BETWEEN(MAXBLOODSPLATS_MIN, maxbloodsplats, MAXBLOODSPLATS_MAX);
 
     if (mousebfire < -1 || mousebfire > MAX_MOUSE_BUTTONS)
@@ -1076,19 +1042,11 @@ static void M_CheckDefaults(void)
     if (mousebforward < -1 || mousebforward > MAX_MOUSE_BUTTONS || mousebforward == mousebfire)
         mousebforward = MOUSEFORWARD_DEFAULT;
 
-#if defined(SDL20)
-    if (mousebprevweapon < -1 || mousebprevweapon > MAX_MOUSE_BUTTONS + 2
-#else
     if (mousebprevweapon < -1 || mousebprevweapon > MAX_MOUSE_BUTTONS
-#endif
         || mousebprevweapon == mousebfire || mousebprevweapon == mousebforward)
         mousebprevweapon = MOUSEPREVWEAPON_DEFAULT;
 
-#if defined(SDL20)
-    if (mousebnextweapon < -1 || mousebnextweapon > MAX_MOUSE_BUTTONS + 2
-#else
     if (mousebnextweapon < -1 || mousebnextweapon > MAX_MOUSE_BUTTONS
-#endif
         || mousebnextweapon == mousebfire || mousebnextweapon == mousebforward
         || mousebnextweapon == mousebprevweapon)
         mousebnextweapon = MOUSENEXTWEAPON_DEFAULT;
@@ -1125,16 +1083,6 @@ static void M_CheckDefaults(void)
 
     runcount = BETWEEN(0, runcount, RUNCOUNT_MAX);
 
-#if defined(SDL20)
-    if (strcasecmp(scaledriver, "opengl") && strcasecmp(scaledriver, "direct3d")
-        && strcasecmp(scaledriver, "software") && strcasecmp(scaledriver, "opengles")
-        && strcasecmp(scaledriver, "opengles2"))
-        scaledriver = SCALEDRIVER_DEFAULT;
-
-    if (strcasecmp(scalefilter, "nearest") && strcasecmp(scalefilter, "linear"))
-        scalefilter = SCALEFILTER_DEFAULT;
-#endif
-
     screensize = BETWEEN(SCREENSIZE_MIN, screensize, SCREENSIZE_MAX);
 
     if (screenwidth && screenheight
@@ -1169,11 +1117,6 @@ static void M_CheckDefaults(void)
 
     if (translucency != false && translucency != true)
         translucency = TRANSLUCENCY_DEFAULT;
-
-#if defined(SDL20)
-    if (vsync != false && vsync != true)
-        vsync = VSYNC_DEFAULT;
-#endif
 
     if (widescreen != false && widescreen != true)
         widescreen = WIDESCREEN_DEFAULT;

@@ -51,7 +51,7 @@ void I_ShutdownWindows32(void);
 #include <unistd.h>
 #endif
 
-#if !defined(SDL20) && defined(__MACOSX__)
+#if defined(__MACOSX__)
 #include <CoreFoundation/CFUserNotification.h>
 #endif
 
@@ -222,9 +222,7 @@ void I_Quit(boolean shutdown)
     {
         S_Shutdown();
 
-#if !defined(SDL20)
         I_SaveWindowPosition();
-#endif
 
         if (returntowidescreen)
             widescreen = true;
@@ -252,7 +250,7 @@ void I_WaitVBL(int count)
     I_Sleep((count * 1000) / 70);
 }
 
-#if !defined(SDL20) && !defined(WIN32) && !defined(__MACOSX__)
+#if !defined(WIN32) && !defined(__MACOSX__)
 
 #define ZENITY_BINARY "/usr/bin/zenity"
 
@@ -341,7 +339,7 @@ void I_Error(char *error, ...)
     va_list     argptr;
     char        msgbuf[512];
 
-#if !defined(SDL20) && defined(WIN32)
+#if defined(WIN32)
     wchar_t     wmsgbuf[512];
 #endif
 
@@ -353,9 +351,7 @@ void I_Error(char *error, ...)
     // Shutdown. Here might be other errors.
     S_Shutdown();
 
-#if !defined(SDL20)
     I_SaveWindowPosition();
-#endif
 
     if (returntowidescreen)
         widescreen = true;
@@ -377,15 +373,12 @@ void I_Error(char *error, ...)
     M_vsnprintf(msgbuf, sizeof(msgbuf) - 1, error, argptr);
     va_end(argptr);
 
-#if defined(SDL20)
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, PACKAGE_NAME, msgbuf, NULL);
-#elif defined(WIN32)
+#if defined(WIN32)
     MultiByteToWideChar(CP_ACP, 0, msgbuf, strlen(msgbuf) + 1, wmsgbuf, sizeof(wmsgbuf));
 
     MessageBoxW(NULL, wmsgbuf, PACKAGE_NAME_W, MB_ICONERROR | MB_OK);
 
     I_ShutdownWindows32();
-
 #elif defined(__MACOSX__)
     {
         CFStringRef     message;

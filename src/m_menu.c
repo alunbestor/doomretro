@@ -1500,10 +1500,6 @@ void M_DrawEpisode(void)
         M_DrawCenteredString(44 + OFFSET, s_M_WHICHEPISODE);
 }
 
-#if defined(SDL20)
-extern SDL_Window       *window;
-#endif
-
 void M_SetWindowCaption(void)
 {
     static char caption[128];
@@ -1521,11 +1517,7 @@ void M_SetWindowCaption(void)
             M_snprintf(caption, sizeof(caption), "%s (%s)", caption, s_CAPTION_BFGEDITION);
     }
 
-#if defined(SDL20)
-    SDL_SetWindowTitle(window, caption);
-#else
     SDL_WM_SetCaption(caption, NULL);
-#endif
 }
 
 void M_DrawExpansion(void)
@@ -2264,12 +2256,7 @@ boolean M_Responder(event_t *ev)
     int         key = -1;
     int         i;
     static int  keywait = 0;
-
-#if defined(SDL20)
-    SDL_Keymod  modstate = SDL_GetModState();
-#else
     SDLMod      modstate = SDL_GetModState();
-#endif
 
     if (startingnewgame || wipe)
         return false;
@@ -2375,7 +2362,6 @@ boolean M_Responder(event_t *ev)
             usinggamepad = false;
         }
 
-#if !defined(SDL20)
         else if (!messageToPrint)
         {
             // select previous menu item
@@ -2394,31 +2380,7 @@ boolean M_Responder(event_t *ev)
                 usinggamepad = false;
             }
         }
-#endif
     }
-#if defined(SDL20)
-    else if (ev->type == ev_mousewheel)
-    {
-        if (!messageToPrint)
-        {
-            // select previous menu item
-            if (ev->data1 > 0)
-            {
-                key = KEY_UPARROW;
-                mousewait = I_GetTime() + 3;
-                usinggamepad = false;
-            }
-
-            // select next menu item
-            else if (ev->data1 < 0)
-            {
-                key = KEY_DOWNARROW;
-                mousewait = I_GetTime() + 3;
-                usinggamepad = false;
-            }
-        }
-    }
-#endif
     else if (ev->type == ev_keydown)
     {
         key = ev->data1;
